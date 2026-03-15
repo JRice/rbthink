@@ -6,17 +6,17 @@
 nums = [-1,2,1,4]
 target = 6
 
-puts "Given the list #{nums.join(', ')}, we want the first combination of three members that sum nearest #{target}."
-
 # Build a lookup of sums of pairs:
 rev_pairs = {}
 nums.each_with_index do |start_num, o|
   i = o+1
   while i < nums.size
     target_num = nums[i]
+    puts "target num: #{target_num}"
     sum = target_num + start_num
     unless rev_pairs.key?(sum)
       rev_pairs[sum] = [o, i]
+      puts "Adding #{sum} with indexes #{o}, #{i}, which have values #{start_num}, #{target_num}"
     end
     i += 1
   end
@@ -32,26 +32,30 @@ def find_nearest_key(keys, target, inc)
   return target if keys.include?(target) # exact match!
   keys_plus_target = (keys.dup << target).sort
   i = keys_plus_target.index(target)
-  return keys.index(keys_plus_target[1]) if i.zero?
-  return keys.index(keys_plus_target[-2]) if i == keys.size
+  return keys_plus_target[1] if i.zero?
+  return keys[-1] if i == keys.size
   delta_up = keys_plus_target[i+1] - target
   delta_down = target - keys_plus_target[i-1]
-  return keys.index(keys_plus_target[i+1]) if delta_up < delta_down
-  return keys.index(keys_plus_target[i-2])
+  return keys_plus_target[i+1] if delta_up < delta_down
+  return keys_plus_target[i-1]
 end
 
 
 def find_best_match(nums, rev_pairs, target)
   best_match = {}
   nums.each_with_index do |num, i|
+    puts "Checking #{num}, in position #{i}"
     delta = target - num
     nearest_key = find_nearest_key(rev_pairs.keys, delta, 1) 
     sum = num + nearest_key
+    puts "I see a sum of #{sum} here for a key of #{nearest_key} in #{rev_pairs.keys}..."
     next if rev_pairs[nearest_key].include?(i)
     tuple = []
     rev_pairs[nearest_key].each { |j| tuple << nums[j] }
     tuple << num
+    puts "We have a tuple of #{tuple.join(', ')}"
     score = (target - sum).abs
+    puts "That appears to be #{score} away from the target."
     match = build_match(tuple, score)
     best_match = match if best_match.empty? or score < best_match[:score] 
   end
