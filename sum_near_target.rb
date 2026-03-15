@@ -22,12 +22,6 @@ nums.each_with_index do |start_num, o|
   end
 end
 
-scores = {}
-
-def build_match(tuple, score)
-  { tuple: tuple, score: score }
-end
-
 def find_nearest_key(keys, target, inc)
   return target if keys.include?(target) # exact match!
   keys_plus_target = (keys.dup << target).sort
@@ -52,7 +46,7 @@ def find_best_match(nums, rev_pairs, target)
     rev_pairs[nearest_key].each { |j| tuple << nums[j] }
     tuple << num
     score = (target - sum).abs
-    match = build_match(tuple, score)
+    match = { tuple: tuple, score: score }
     best_match = match if best_match.empty? or score < best_match[:score] 
   end
   return best_match
