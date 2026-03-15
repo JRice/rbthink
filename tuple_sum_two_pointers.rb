@@ -39,8 +39,8 @@ def three_sum_closest(in_nums, target)
 end
 
 # Execution
-nums = [-1, 2, 1, 4]
-target = 6
+nums = [-1, 2, 1, 4, 5, 9, 2, 12]
+target = 13
 result = three_sum_closest(nums, target)
 
 puts "The closest sum is #{result[:nums].join('+')} = #{result[:sum]}, which is #{(target - result[:sum]).abs} away from #{target}."
